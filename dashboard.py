@@ -9,11 +9,10 @@ st.set_page_config(
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv(
-        r'C:\Users\fidha\OneDrive\Documents\superstore\output\superstore_clean.csv',
-        parse_dates=['Order Date', 'Ship Date']
-    )
+    df = pd.read_csv("data/superstore_clean.csv", parse_dates=['Order Date', 'Ship Date'] )
     return df
+#reference
+
 
 df = load_data()
 
@@ -28,7 +27,7 @@ with st.sidebar:
         start = st.date_input("Start date", value=df["Order Date"].min().date())
         end = st.date_input("End date", value= df["Order Date"].max().date())
         submitted = st.form_submit_button("Apply")
-        
+
     if st.button("Refresh data"):
         st.cache_data.clear()
         st.rerun()    
@@ -40,11 +39,9 @@ if submitted:
     filtered = filtered[filtered["Order Date"].dt.date.between(start,end)]
 
 st.sidebar.divider()
-csv_bytes=df.to_csv(index=False).encode('utf-8')
-st.sidebar.download_button('Download filtered data',
-                           data=csv_bytes,
-                           file_name='superstore-filtered.csv',
-                           mime='text/csv')
+csv_bytes=filtered.to_csv(index=False).encode("utf-8")
+st.sidebar.download_button("download filtered data",data=csv_bytes,file_name="superstore_filtered.csv",mime="text/csv")
+
 
 disc_arr = filtered["Discount"].values
 sales_arr = filtered["Sales"].values
